@@ -1,0 +1,197 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CFAS Study Guide — Millan 2024</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f8f7f5;--surface:#ffffff;--text:#111;--muted:#666;--accent:#6f62d6;--shadow:0 18px 40px rgba(0,0,0,.08)}
+    [data-theme="dark"]{--bg:#111318;--surface:#1d222b;--text:#eef0f5;--muted:#a6abb7;}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'DM Sans',system-ui,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    .container{max-width:1100px;margin:0 auto;padding:20px 18px 36px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 12px;position:sticky;top:0;background:var(--bg);z-index:50}
+    .brand{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+    .brand::before{content:'CFAS';background:var(--accent);color:#fff;padding:8px 10px;border-radius:999px;font-size:12px}
+    h1{font-family:'Instrument Serif',serif;font-size:34px;margin:0 0 4px}
+    .subtitle{margin:0 0 20px;color:var(--muted);line-height:1.45}
+    .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 0}
+    .section-buttons{display:flex;flex-wrap:wrap;gap:8px}
+    .btn,button{font:inherit;cursor:pointer;border:1px solid rgba(0,0,0,.08);border-radius:999px;padding:9px 16px;background:rgba(255,255,255,.88);transition:.2s ease;color:var(--text)}
+    [data-theme="dark"] .btn, [data-theme="dark"] button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:var(--text)}
+    .btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .search input{min-width:240px;width:320px;max-width:100%;padding:10px 14px;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.92)}
+    [data-theme="dark"] .search input{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:var(--text)}
+    #grid{display:grid;grid-template-columns:1fr;gap:14px;padding-top:16px}
+    @media(min-width:720px){#grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(min-width:1040px){#grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    .card{background:var(--surface);padding:18px 18px 16px;border-radius:20px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.04);cursor:pointer;display:flex;flex-direction:column;gap:10px;min-height:170px}
+    .card:hover{transform:translateY(-1px)}
+    .code{display:inline-flex;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(111,98,214,.12);color:var(--accent);width:max-content}
+    .card-title{font-size:16px;font-weight:700;line-height:1.3}
+    .card-sub{color:var(--muted);font-size:14px;line-height:1.5;flex:1}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}
+    .modal-backdrop.show{display:flex}
+    .modal{width:min(760px,100%);max-height:90vh;overflow-y:auto;background:var(--surface);border-radius:22px;padding:24px;box-shadow:0 28px 80px rgba(0,0,0,.18)}
+    .modal h2{margin-top:0}
+    .modal p{margin:10px 0;line-height:1.6;color:var(--muted)}
+    .field{margin-top:14px}
+    .field strong{display:block;color:var(--text);margin-bottom:6px}
+    .field div{line-height:1.6;color:var(--muted)}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);padding:10px 18px;border-radius:999px;background:#111;color:#fff;opacity:0;pointer-events:none;transition:.25s ease}
+    .toast.show{opacity:1}
+    .error-banner{position:fixed;right:18px;bottom:18px;max-width:360px;padding:12px 14px;background:#fff3f3;color:#991b1b;border:1px solid #f5c2c7;border-radius:14px;display:none;z-index:200}
+    .error-banner.show{display:block}
+    footer{padding-top:24px;color:var(--muted);font-size:13px;text-align:center}
+  </style>
+</head>
+<body data-theme="light">
+  <div class="container topbar">
+    <div class="brand">Study Guide</div>
+    <button id="themeToggle" class="btn">Toggle theme</button>
+  </div>
+  <div class="container">
+    <h1>CFAS Accounting Standards</h1>
+    <p class="subtitle">CFAS Reviewer for my baby</p>
+    <div class="filters">
+      <div class="section-buttons">
+        <button class="btn active" data-cat="all">All</button>
+        <button class="btn" data-cat="framework">Framework</button>
+        <button class="btn" data-cat="PAS">PAS</button>
+        <button class="btn" data-cat="PFRS">PFRS</button>
+        <button class="btn" data-cat="Sustainability">Sustainability</button>
+      </div>
+      <div class="search"><input id="search" placeholder="Search standards"></div>
+    </div>
+    <div id="grid"></div>
+    <div id="empty" style="display:none;text-align:center;padding:36px;color:var(--muted)">No standards match your search.</div>
+  </div>
+
+  <div id="overlay" class="modal-backdrop" tabindex="-1">
+    <div class="modal" role="dialog" aria-modal="true">
+      <button id="closeBtn" class="btn" style="margin-left:auto;display:block">Close</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied to clipboard</div>
+  <div id="errbox" class="error-banner" role="alert"></div>
+  <footer>Based on Conceptual Framework and Accounting Standards by Zeus Vernon B. Millan, 2024.</footer>
+
+  <script>
+    const STANDARDS = [
+      {id:'framework',cat:'framework',code:'Framework',title:'Conceptual Framework for Financial Reporting',objective:'Provides the foundation for developing, understanding, and interpreting PFRSs. NOT a standard — if it conflicts with a Standard, the Standard prevails.',key:'Objective of Financial Reporting (primary users = investors, lenders, creditors); Fundamental QC (Relevance + Faithful Representation); Enhancing QC (Comparability, Verifiability, Timeliness, Understandability); Cost constraint; 5 Elements (Asset=controlled economic resource; Liability=present obligation; Equity=residual interest; Income=increases equity excl. owner contributions; Expense=decreases equity excl. owner distributions)' ,example:'An asset is recognized only if it (a) meets the definition of an element AND (b) recognizing it provides useful information — both relevant and faithfully represented.',takeaway:'The Framework is the "why" behind all the Standards. When no Standard applies, use the Framework as your guide.'},
+      {id:'PAS-1',cat:'PAS',code:'PAS 1',title:'Presentation of Financial Statements',key:'Complete FS, current vs non-current, OCI. Complete set of 6 FS. Fair presentation. Accrual basis (except SCF). Current asset: within operating cycle OR 12 months OR held for trading OR unrestricted cash. Current liability: same logic. Deferred taxes always NONCURRENT. OCI items: revaluation surplus, DB plan remeasurements, FVOCI changes, translation differences, cash flow hedge effective portion.',example:'ABC Corp current assets ₱1,598,020 and non-current ₱3,350,000.',takeaway:'PAS 1 sets the RULES OF PRESENTATION — how financial statements look, what’s inside them, and how items are classified.'},
+      {id:'PAS-2',cat:'PAS',code:'PAS 2',title:'Inventories',key:'LCNRV, FIFO/WA, no LIFO. Measurement = LCNRV. Cost formulas: Specific ID, FIFO, Weighted Average. LIFO PROHIBITED. NRV = Est. Selling Price − Costs of Completion − Costs to Sell. Included in cost: purchase costs, conversion costs. Excluded: abnormal waste, storage costs, admin overhead, selling costs. Write-down reversal cannot exceed original.',example:'Product A (cost ₱100K, NRV ₱120K), Product B (cost ₱200K, NRV ₱190K) — write down B by ₱10K. Total = ₱290K.',takeaway:'PAS 2 = LCNRV. Cost your inventory, then test if NRV is lower. If it is, write it down. No LIFO!'},
+      {id:'PAS-7',cat:'PAS',code:'PAS 7',title:'Statement of Cash Flows',key:'Operating, investing, financing; direct & indirect. Cash equivalents: within 3 months or less. 3 sections: Operating (revenue-producing), Investing (non-current assets), Financing (borrowings/equity). Direct method (encouraged) vs Indirect method (common). Non-cash transactions excluded but disclosed.',example:'₱4.9M from customers (operating), ₱500K building (investing), ₱600K share issuance (financing).',takeaway:'Operating = day-to-day. Investing = assets. Financing = funding.'},
+      {id:'PAS-8',cat:'PAS',code:'PAS 8',title:'Accounting Policies, Changes in Accounting Estimates and Errors',key:'Policy=restate; Estimate=prospective; Error=restate. Change in Policy → retrospective (restate prior periods). Change in Estimate → prospective (current + future). Prior Period Error → retrospective restatement. If unclear policy or estimate → treat as estimate.',example:'FIFO→WA = policy change (restate). Useful life change = estimate (prospective).',takeaway:'POLICY → Restate the Past. ESTIMATE → Fix Going Forward. ERROR → Correct the Past.'},
+      {id:'PAS-10',cat:'PAS',code:'PAS 10',title:'Events After the Reporting Period',key:'Adjusting vs non-adjusting events. Adjusting event = evidence of conditions EXISTING at year-end → adjust FS. Non-adjusting = conditions ARISING AFTER year-end → disclose only. Adjusting examples: lawsuit settlement, customer bankruptcy, fraud discovered. Non-adjusting examples: fire after year-end, FV changes, dividends declared after year-end. Dividends declared after year-end NOT recognized as liabilities.',example:'Adjusting events existing at year-end are adjusted; fire after year-end is disclosed only.',takeaway:'Did the condition EXIST at year-end? YES = Adjust. NO = Disclose only.'},
+      {id:'PAS-12',cat:'PAS',code:'PAS 12',title:'Income Taxes',key:'DTA, DTL, temporary differences. Asset-Liability method. Taxable temp. difference → DTL. Deductible temp. difference → DTA. Both DTA and DTL = NONCURRENT.',example:'Bad debts accrued ₱100K; accounting profit ₱900K × 30% = ₱270K tax expense; current tax ₱300K; DTA = ₱30K.',takeaway:'Taxable difference → DTL. Deductible difference → DTA. Both are NONCURRENT.'},
+      {id:'PAS-16',cat:'PAS',code:'PAS 16',title:'Property, Plant and Equipment',key:'Cost or revaluation model; depreciation; disposal. Initial measurement at cost. Cost model: cost − accum. depreciation − accum. impairment. Revaluation model: FV − subsequent depreciation/impairment. Revaluation surplus → OCI. Decrease → first reduce surplus, excess to P&L. Depreciation methods: straight-line, units of production, diminishing balance. Component approach. Disposal gain/loss → P&L (not OCI).',example:'Equipment ₱1M, 10-yr life; annual depreciation ₱100K.',takeaway:'PPE is either at COST or REVALUED FAIR VALUE. Always depreciate. Disposal gain/loss goes to P&L.'},
+      {id:'PAS-19',cat:'PAS',code:'PAS 19',title:'Employee Benefits',key:'DC=simple; DB=3 steps; remeasurements in OCI. Short-term benefits: accrue as rendered. Defined Contribution: expense = contribution. Defined Benefit: Projected Unit Credit Method — 3 steps: (1) PV of DBO, (2) FV of plan assets, (3) Net them. Remeasurements (actuarial gains/losses) → OCI, NEVER reclassified. Service costs + net interest → P&L.',example:'DBO ₱2M, plan assets FV ₱1.5M → net DB liability ₱500K.',takeaway:'DC plan = simple (pay and done). DB plan = complex. Remeasurements always stay in OCI.'},
+      {id:'PAS-20',cat:'PAS',code:'PAS 20',title:'Accounting for Government Grants and Disclosure of Government Assistance',key:'Match grant to expense/depreciation period. Recognize only when: (1) reasonable assurance of compliance AND (2) grant will be received. Asset-related grant: deduct from asset OR deferred income. Income-related grant: deduct from expense OR other income. Match grant income to related expense/depreciation period.',example:'₱1M grant for ₱3M equipment (5-yr life) → ₱200K/yr grant income.',takeaway:'Government grants are not free money recorded all at once — MATCH the grant income to the related expense or depreciation period.'},
+      {id:'PAS-21',cat:'PAS',code:'PAS 21',title:'The Effects of Changes in Foreign Exchange Rates',key:'Monetary=closing rate; non-monetary=historical rate. Functional currency vs presentation currency. Initial recognition: spot rate at transaction date. Monetary items (cash, receivables, payables): closing rate → differences in P&L. Non-monetary at historical cost: historical rate → no differences. Translating FS: Assets/Liabilities at closing rate; Income/Expenses at transaction date rate; all differences → OCI.',example:'€10,000 purchase, rate ₱58→₱60 at year-end; exchange loss ₱20K in P&L.',takeaway:'MONETARY → retranslate at closing rate, differences in P&L. NON-MONETARY → stay at original rate.'},
+      {id:'PAS-23',cat:'PAS',code:'PAS 23',title:'Borrowing Costs',key:'Capitalize on qualifying assets; specific & general formulas. Capitalize borrowing costs directly attributable to qualifying assets (takes substantial time to get ready). Qualifying assets: buildings under construction, long-production inventories. NOT qualifying: financial assets, routine inventories, assets already ready. Specific borrowing: actual BC − investment income. General borrowing: avg. expenditure × capitalization rate. Capitalization rate = total general borrowing interest ÷ total general borrowings.',example:'₱1M loan at 10%; temporary investment earns ₱20K; capitalizable BC = ₱80K.',takeaway:'Interest on qualifying asset construction is part of the COST — as long as you’re actively building.'},
+      {id:'PAS-24',cat:'PAS',code:'PAS 24',title:'Related Party Disclosures',key:'Disclose all related party relationships & transactions. Related if one party can affect financial/operating decisions through control, significant influence, or joint control. Related parties: parent-subsidiary, fellow subsidiaries, investor-associate, JV partner, KMP and close family, post-employment benefit plan. NOT related merely because: common director, co-venturer, economic dependence. Disclose: parent-subsidiary relationship (even without transactions), KMP compensation by category, transaction nature/terms/amounts. Arm’s-length claim requires substantiation.',example:'Jollibee controls Chowking, Greenwich, Mang Inasal — all must be disclosed.',takeaway:'PAS 24 = Transparency. Disclose the WHO, WHAT, and HOW MUCH.'},
+      {id:'PAS-28',cat:'PAS',code:'PAS 28',title:'Investments in Associates and Joint Ventures',key:'Equity method; 20%+ = significant influence. Associate = significant influence (NOT control). ≥20% → presumed significant influence. <20% → presumed NOT. Equity method: initial at cost; subsequently adjust for share in investee’s equity changes. Share in profit → increase; share in loss → decrease; dividends received → decrease investment (NOT income). Stop recognizing losses when investment reaches zero.',example:'20% interest purchased ₱400K; profit ₱100K, dividends ₱50K → year-end investment ₱410K; investment income ₱20K.',takeaway:'Equity Method = One-Line Consolidation. Dividends REDUCE the investment — they are NOT income.'},
+      {id:'PAS-32',cat:'PAS',code:'PAS 32',title:'Financial Instruments: Presentation',key:'Contractual obligation test; compound instruments. Overriding test: contractual obligation to deliver cash → LIABILITY; no obligation → EQUITY. Redeemable preference shares (holder can redeem) = liability. Callable preference shares (issuer can call) = equity. Convertible bonds = compound instrument (liability + equity component). Equity component = issue price − FV of debt component. Treasury shares: deducted from equity; no gain/loss on purchase/sale/cancellation. Offset allowed only if: legal right of setoff AND intention to settle net.',example:'Convertible bonds ₱1,050K issued; debt component ₱980K; equity component ₱70K.',takeaway:'Is there a CONTRACTUAL OBLIGATION to pay cash? YES → Liability. NO → Equity.'},
+      {id:'PAS-33',cat:'PAS',code:'PAS 33',title:'Earnings Per Share',key:'Basic & diluted EPS for ordinary shares. Applies to publicly listed entities. EPS for ordinary shares only. Basic EPS = (Profit − Preferred Dividends) ÷ WA Ordinary Shares. Cumulative pref. shares: deduct 1 year’s dividend whether declared or not. Non-cumulative: deduct only declared dividends. Share dividends/splits/bonuses: adjust retrospectively. Diluted EPS = (Profit + after-tax interest on convertibles) ÷ (WA shares + incremental shares). Only dilutive potential shares included; antidilutive excluded. Diluted EPS must be ≤ Basic EPS.',example:'Profit ₱1.2M, pref. dividend ₱30K, WA shares 202,500 → Basic EPS ₱5.78.',takeaway:'Basic = simple. Diluted = "What if" all potential shares were issued? Diluted ≤ Basic EPS.'},
+      {id:'PAS-34',cat:'PAS',code:'PAS 34',title:'Interim Financial Reporting',key:'Same policies; tax at estimated annual rate. Interim period: shorter than full year. Can present: complete set of FS OR condensed FS (PAS 34 minimum). Same accounting policies as annual FS. Income tax: best estimate of weighted average annual rate. Losses recognized immediately when they occur. Materiality assessed relative to interim period data.',example:'Condensed interim statements with estimated annual tax rate applied.',takeaway:'Same rules as annual, just SHORTER periods and CONDENSED presentation. Tax uses estimated annual effective rate.'},
+      {id:'PAS-36',cat:'PAS',code:'PAS 36',title:'Impairment of Assets',key:'CA>RA → impair; recoverable = higher of FVLCD/VIU. Impaired when CA > Recoverable Amount. Recoverable Amount = higher of FVLCD and VIU (PV of future cash flows). Annual testing required for: indefinite-life intangibles, intangibles not yet in use, goodwill. Cost model: impairment loss → P&L. Revalued asset: first reduce revaluation surplus (OCI), excess to P&L. CGU allocation: first reduce goodwill to zero, then pro rata. Goodwill impairment CANNOT be reversed. Other assets CAN be reversed (limited to would-be CA).',example:'Building CA ₱700K; FVLCD ₱600K, VIU ₱580K → RA = ₱600K → impairment loss ₱100K.',takeaway:'No asset should be carried above what you can GET FROM IT. If it is, write it down. Goodwill impairment is PERMANENT.'},
+      {id:'PAS-37',cat:'PAS',code:'PAS 37',title:'Provisions, Contingent Liabilities and Contingent Assets',key:'Probable=recognize; possible=disclose; remote=ignore. Provision: liability of uncertain timing or amount. Recognition requires ALL 3: present obligation + probable outflow + reliable estimate. Probable liability → RECOGNIZE and disclose. Possible liability → DISCLOSE only. Remote → IGNORE. Contingent asset: probable → disclose; virtually certain → recognize. Measurement: single outcome = best estimate; large population = expected value; continuous range = midpoint.',example:'Lawsuit, probably lose, most likely ₱4M → recognize provision ₱4,000,000.',takeaway:'PROBABLE = Recognize. POSSIBLE = Disclose. REMOTE = Ignore.'},
+      {id:'PAS-38',cat:'PAS',code:'PAS 38',title:'Intangible Assets',key:'Research=expense; development=TIAPAR; indefinite=no amortization. 3 essentials: identifiability (separable OR legal rights), control, future economic benefits. Research → ALWAYS expense. Development → capitalize ONLY IF all TIAPAR: Technical feasibility, Intention to complete, Ability to use/sell, Probable economic benefits, Availability of resources, Reliable measurement of cost. Indefinite useful life → no amortization; annual impairment test. Finite useful life → amortize over shorter of useful life and legal life. Internally generated brands/customer lists/goodwill NEVER recognized.',example:'Patent ₱300K, useful life 16 yrs, remaining legal life 15 yrs → amortize 15 yrs → ₱20K/yr.',takeaway:'Research = Expense. Development = Capitalize IF TIAPAR. Indefinite life = NO amortization, but TEST annually.'},
+      {id:'PAS-40',cat:'PAS',code:'PAS 40',title:'Investment Property',key:'Cost or FV model; FV model=no depreciation. Investment property: land/building held to earn rentals OR capital appreciation, cash flows independent. NOT investment property: owner-occupied (→PAS 16), held for sale in ordinary course (→PAS 2). Cost model: cost − accum. depreciation − impairment; depreciate. Fair value model: FV at each reporting date; changes in P&L; NO depreciation. Transfers only when change in use occurs. Derecognition: gain/loss → P&L.',example:'Building ₱13M for leasing; FV at year-end ₱12M → loss ₱1M in P&L; no depreciation under FV model.',takeaway:'Property that EARNS for itself. Cost model = depreciate it. FV model = remeasure it, no depreciation.'},
+      {id:'PAS-41',cat:'PAS',code:'PAS 41',title:'Agriculture',key:'FVLCTS for biological assets; harvest → PAS 2. Biological asset = living animal or plant. Agricultural produce = harvested produce. Bearer plant → PPE under PAS 16. Biological assets measured at FVLCTS — both initial and subsequent. Agricultural produce at harvest → FVLCTS (initial only); then → inventory under PAS 2. Gains/losses from FV changes → P&L.',example:'Biological asset FV ₱120K, costs to sell ₱8K → initial ₱112K. Year-end FV ₱160K, costs to sell ₱9K → CA ₱151K → gain ₱39K in P&L.',takeaway:'Living things = FVLCTS. Once harvested, it becomes produce → then inventory under PAS 2.'},
+      {id:'PFRS-1',cat:'PFRS',code:'PFRS 1',title:'First-time Adoption of PFRSs',key:'Retrospective application; exemptions available. General rule: retrospective application as if PFRSs always used; adjustments → opening retained earnings. Opening PFRS SFP: recognize required, derecognize prohibited, reclassify, remeasure. Optional exemptions: business combinations before transition, FV as deemed cost for PPE, compound instruments, cumulative translation differences. Prior GAAP estimates not changed unless policy differences or errors.',example:'PFRS 1 = The FIRST TIME you switch to PFRSs. Restate everything — but exemptions exist.',takeaway:'PFRS 1 = The FIRST TIME you switch to PFRSs. Restate everything — but exemptions exist.'},
+      {id:'PFRS-2',cat:'PFRS',code:'PFRS 2',title:'Share-based Payment',key:'Equity=grant date FV; cash=remeasure annually. Equity-settled: issue shares/options → equity; FV at grant date; NOT remeasured. Cash-settled (SARs): cash based on share value → liability; remeasured at each year-end and settlement. Non-employees: FV of goods/services received. Employees: FV of equity instruments at grant date. Vests immediately → full expense at grant date. Vests over time → expense over vesting period adjusted for expected forfeitures.',example:'100 options × 100 employees (3-yr vest), FV ₱15/option, 25% forfeiture estimate. Year 1 expense = 7,500 × ₱15 × 1/3 = ₱37,500.',takeaway:'Equity-settled = fixed at grant date FV. Cash-settled = remeasured every year. Expense over vesting period.'},
+      {id:'PFRS-3',cat:'PFRS',code:'PFRS 3',title:'Business Combinations',key:'Acquisition method; goodwill = price − FV net assets. Only method: Acquisition Method. Steps: (1) identify acquirer, (2) acquisition date, (3) recognize/measure identifiable assets/liabilities at FV, (4) compute goodwill or gain on bargain purchase. Goodwill = Consideration + NCI + Previously Held Interest − FV Net Identifiable Assets. Gain on bargain purchase → immediately in P&L. NCI: measured at FV OR proportionate share in net identifiable assets. Acquisition costs → EXPENSED.',example:'60% acquisition for ₱1M; FV net assets ₱1.2M; NCI ₱480K → goodwill ₱280K.',takeaway:'Acquisition Method only. Goodwill = Price paid MINUS FV of what you got. Acquisition costs are expensed.'},
+      {id:'PFRS-4',cat:'PFRS',code:'PFRS 4',title:'Insurance Contracts (interim)',key:'Interim requirements until PFRS 17 applies',example:'Short-term transitional rules for insurers before full PFRS 17 adoption.',takeaway:'Temporary requirements until IFRS 17 is widely applied.'},
+      {id:'PFRS-5',cat:'PFRS',code:'PFRS 5',title:'Non-current Assets Held for Sale and Discontinued Operations',key:'Current asset; LCNRV; no depreciation. Both conditions required: (1) available for immediate sale in present condition AND (2) sale highly probable. Measurement: lower of CA and FVLCTS. No depreciation once classified. Presentation: Current Assets. Discontinued operation: component disposed that is a major line, geographical area, or subsidiary for resale → single post-tax amount in P&L after continuing operations.',example:'Building CA ₱1.8M, FVLCTS ₱2.7M → held for sale at ₱1.8M; no more depreciation.',takeaway:'Selling a non-current asset → classify as CURRENT at lower of CA and FVLCTS. Stop depreciating immediately.'},
+      {id:'PFRS-6',cat:'PFRS',code:'PFRS 6',title:'Exploration for and Evaluation of Mineral Resources',key:'Recognition and disclosures for exploration/evaluation assets',example:'Costs capitalized or expensed per policy with required disclosures.',takeaway:'Specific guidance for exploration and evaluation — focus on recognition and disclosure.'},
+      {id:'PFRS-7',cat:'PFRS',code:'PFRS 7',title:'Financial Instruments: Disclosures',key:'Risk disclosures and presentation for financial instruments',example:'Disclose credit, liquidity and market risk exposures for significant instruments.',takeaway:'Transparent risk disclosures for financial instruments — complement measurement standards.'},
+      {id:'PFRS-8',cat:'PFRS',code:'PFRS 8',title:'Operating Segments',key:'Disclosure of segment information based on management view',example:'Report segments consistent with internal reporting and resource allocation.',takeaway:'Disclose segments as management views them; provide measures used by management.'},
+      {id:'PFRS-9',cat:'PFRS',code:'PFRS 9',title:'Financial Instruments',key:'Amortized cost, FVOCI, FVPL; ECL model. Classification based on: (a) business model AND (b) contractual cash flow characteristics. Amortized Cost: hold to collect solely P+I. FVOCI: hold to collect AND sell; or equity designated FVOCI. FVPL: all others or irrevocable designation. ECL model: recognize expected losses before they occur. 3-stage model: Stage 1 = 12-month ECL (performing); Stage 2 = lifetime ECL (significant credit risk increase); Stage 3 = lifetime ECL (credit-impaired).',example:'Bond held to collect P+I → amortized cost. Short-term trading bond → FVPL.',takeaway:'How you INTEND to use the instrument determines classification. ECL = recognize losses EARLY.'},
+      {id:'PFRS-10',cat:'PFRS',code:'PFRS 10',title:'Consolidated Financial Statements',key:'Control = power + variable returns + ability to affect. Control requires ALL THREE: power over investee + exposure to variable returns + ability to use power to affect returns. Consolidation: combine line by line, add all assets/liabilities/income/expenses. Eliminate: intercompany transactions, balances, unrealized profits. NCI presented within equity, separately from parent’s equity. Uniform accounting policies for entire group.',example:'Parent owns 80% of Subsidiary → consolidate all items; eliminate intercompany sales; recognize 20% NCI in equity.',takeaway:'Consolidate when you have CONTROL. Control = Power + Variable Returns + Ability to Affect. Eliminate all intercompany items.'},
+      {id:'PFRS-11',cat:'PFRS',code:'PFRS 11',title:'Joint Arrangements',key:'Joint operations vs joint ventures and accounting methods',example:'Joint operation: recognize share of assets/liabilities; joint venture: use equity method.',takeaway:'Different accounting depending on rights to assets and obligations for liabilities.'},
+      {id:'PFRS-12',cat:'PFRS',code:'PFRS 12',title:'Disclosure of Interests in Other Entities',key:'Extensive disclosures for subsidiaries, associates and joint ventures',example:'Provide summarised financial info and nature of risks/exposure.',takeaway:'Comprehensive disclosure to help users evaluate the nature, risks and financial effects of interests in other entities.'},
+      {id:'PFRS-13',cat:'PFRS',code:'PFRS 13',title:'Fair Value Measurement',key:'Exit price; Level 1 > 2 > 3 hierarchy. Fair value = exit price — price received to SELL an asset or PAID to transfer a liability in an orderly transaction between market participants. Level 1: quoted prices in active markets for identical assets/liabilities. Level 2: observable inputs other than Level 1. Level 3: unobservable inputs — entity assumptions. Use highest level of observable inputs available. Principal market = greatest volume and activity.',example:'PSE-quoted share → Level 1. Building using comparable sales → Level 2/3. Unquoted equity using DCF → Level 3.',takeaway:'Fair value = EXIT PRICE between market participants. Always use the highest level of observable inputs. Level 1 is always preferred.'},
+      {id:'PFRS-14',cat:'PFRS',code:'PFRS 14',title:'Regulatory Deferral Accounts',key:'Interim standard for rate-regulated entities',example:'Recognition of regulatory deferral account balances for regulatory timing differences.',takeaway:'Guidance for rate-regulated activities pending a longer-term standard.'},
+      {id:'PFRS-15',cat:'PFRS',code:'PFRS 15',title:'Revenue from Contracts with Customers',key:'5-step model; transfer of control. Step 1: Identify the contract. Step 2: Identify performance obligations. Step 3: Determine transaction price. Step 4: Allocate transaction price based on standalone selling prices. Step 5: Recognize revenue when/as each PO is satisfied (control transfers). Transfer of control indicators: right to payment, physical possession, legal title, significant risks/rewards transferred, customer acceptance.',example:'Software + 1-yr support for ₱100K. Standalone: software ₱90K, support ₱30K (total ₱120K). Allocate: software ₱75K, support ₱25K.',takeaway:'Revenue = 5-Step Model. Recognize when CONTROL transfers — not when cash is received.'},
+      {id:'PFRS-16',cat:'PFRS',code:'PFRS 16',title:'Leases',key:'Lessee: ROU asset + lease liability; lessor: finance or operating. Lessee: recognize ROU asset + lease liability for most leases. Lease liability = PV of future lease payments (implicit rate or IBR). ROU asset = lease liability + initial direct costs + prepaid payments + dismantlement costs. ROU asset depreciated over shorter of useful life and lease term. Lessor — Finance lease: derecognize asset; recognize finance lease receivable. Lessor — Operating lease: keep asset; straight-line income. Finance lease indicators: ownership transfer, bargain purchase option, ≥75% economic life, ≥90% of FV, specialized asset.',example:'3-yr lease, ₱100K/yr, 10% implicit rate; PV factor 2.48685. Lease liability = ₱248,685; ROU = ₱248,685; depreciation = ₱82,895/yr.',takeaway:'PFRS 16 = Most leases are now ON the balance sheet for lessees (ROU asset + lease liability).'},
+      {id:'PFRS-17',cat:'PFRS',code:'PFRS 17',title:'Insurance Contracts',key:'General model: FCF + CSM; PAA for short-term. Insurance contract: insurer accepts significant insurance risk from policyholder. Insurance risk must be pre-existing and significant. General Model (default): FCF (future cash flows + risk adjustment + time value) + CSM (unearned profit; released as service is provided). PAA (simplified): coverage period ≤1 year OR results approximate general model. P&L: Insurance Service Result + Insurance Finance Income/Expenses. CSM ensures no day-1 gain.',example:'1-yr policy under PAA: recognize premium as revenue over coverage period.',takeaway:'The CSM holds the unearned profit and is released as service is provided over the coverage period.'},
+      {id:'IFRS-S1',cat:'Sustainability',code:'IFRS S1',title:'General Requirements for Sustainability Disclosures',key:'4 pillars: governance, strategy, risk, metrics. Required for all sustainability-related risks and opportunities. 4 Pillars: (1) Governance — who oversees risks/opportunities and how; (2) Strategy — how they affect the business model and financial performance; (3) Risk Management — how entity identifies, assesses, and manages them; (4) Metrics and Targets — quantitative/qualitative performance measures. Connected to financial statements.',example:'Board committee for ESG (Governance), climate risks affecting supply chain (Strategy), risk identification process (Risk Mgmt), carbon reduction targets with timeline (Metrics).',takeaway:'IFRS S1 = The sustainability version of the Conceptual Framework. Use the 4 pillars for ALL sustainability-related risks and opportunities.'},
+      {id:'IFRS-S2',cat:'Sustainability',code:'IFRS S2',title:'Climate-related Disclosures',key:'Physical + transition risks; GHG emissions disclosure. Physical risks — Acute: floods, storms, droughts, wildfires. Physical risks — Chronic: rising sea levels, temperature shifts, precipitation changes. Transition risks: policy changes, legal changes, technological disruption, market/reputational changes. Disclose: climate transition plan, climate resilience, absolute gross GHG emissions.',example:'Coastal factory flood risk (physical-acute), carbon tax exposure (transition), plan to reduce Scope 1 emissions 30% by 2030.',takeaway:'IFRS S2 = IFRS S1 applied to CLIMATE. Physical risks (nature hurts you) + Transition risks (policy/tech hurts you). Disclose your emissions.'}
+    ];
+
+    const grid = document.getElementById('grid');
+    const search = document.getElementById('search');
+    const overlay = document.getElementById('overlay');
+    const modalContent = document.getElementById('modalContent');
+    const toast = document.getElementById('toast');
+    const errbox = document.getElementById('errbox');
+    let currentCat = 'all';
+
+    function renderCards(){
+      const query = (search.value||'').toLowerCase().trim();
+      const items = STANDARDS.filter(item => {
+        const matchesCat = currentCat === 'all' || item.cat === currentCat;
+        const text = `${item.code} ${item.title} ${item.key} ${item.takeaway}`.toLowerCase();
+        return matchesCat && text.includes(query);
+      });
+      grid.innerHTML='';
+      if(!items.length){ document.getElementById('empty').style.display='block'; return; }
+      document.getElementById('empty').style.display='none';
+      items.forEach(item => {
+        const card = document.createElement('article');
+        card.className='card';
+        card.innerHTML=`<span class="code">${item.code}</span><div class="card-title">${item.title}</div><div class="card-sub">${item.takeaway}</div>`;
+        card.addEventListener('click',()=>openModal(item));
+        grid.appendChild(card);
+      });
+    }
+
+    function openModal(item){
+      modalContent.innerHTML=`<h2>${item.code} — ${item.title}</h2>
+        <div class="field"><strong>Key</strong><div>${item.key||'n/a'}</div></div>
+        <div class="field"><strong>Example</strong><div>${item.example||'n/a'}</div></div>
+        <div class="field"><strong>Takeaway</strong><div>${item.takeaway||'n/a'}</div></div>
+        <div class="actions"><button class="btn" id="copyBtn">Copy prompt</button></div>`;
+      document.getElementById('copyBtn')?.addEventListener('click',()=>{
+        copyText(`${item.code} - ${item.title}: ${item.takeaway}`).then(()=>showToast('Copied')).catch(()=>showToast('Copy failed'));
+      });
+      overlay.classList.add('show');
+    }
+
+    function closeModal(){ overlay.classList.remove('show'); }
+    document.getElementById('closeBtn')?.addEventListener('click',closeModal);
+    overlay.addEventListener('click',e=>{ if(e.target===overlay) closeModal(); });
+
+    function showToast(message='Copied'){ toast.textContent=message; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1800); }
+    function copyText(text){
+      if(navigator.clipboard?.writeText){ return navigator.clipboard.writeText(text); }
+      return new Promise((resolve,reject)=>{
+        const textarea=document.createElement('textarea'); textarea.value=text; document.body.appendChild(textarea); textarea.select();
+        const ok=document.execCommand('copy'); document.body.removeChild(textarea); ok ? resolve() : reject();
+      });
+    }
+
+    document.querySelectorAll('[data-cat]').forEach(btn => btn.addEventListener('click',()=>{
+      document.querySelectorAll('[data-cat]').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); currentCat=btn.dataset.cat; renderCards();
+    }));
+    search.addEventListener('input',renderCards);
+
+    const themeToggle=document.getElementById('themeToggle');
+    function setTheme(dark){ document.body.setAttribute('data-theme', dark?'dark':'light'); try{ localStorage.setItem('cfas-dark', dark?'1':'0'); }catch(e){} }
+    if(localStorage.getItem('cfas-dark')==='1') setTheme(true);
+    themeToggle.addEventListener('click',()=> setTheme(document.body.getAttribute('data-theme')!=='dark'));
+
+    function showError(message){ errbox.textContent=message; errbox.classList.add('show'); }
+    window.addEventListener('error', e=>showError(e.message||'Runtime error'));
+    window.addEventListener('unhandledrejection', e=>showError(e.reason?.message||'Unhandled promise rejection'));
+
+    renderCards();
+  </script>
+</body>
+</html>
